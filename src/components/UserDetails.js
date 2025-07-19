@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { db, doc, getDoc } from "../firebaseConfig";
-import Navbar from "./NavBar"; // Import Navbar
 import "./UserDetails.css"; // Import CSS for styling
 
 function UserDetails() {
@@ -23,7 +22,6 @@ function UserDetails() {
 
   return (
     <>
-      <Navbar /> {/* Include Navbar */}
       <div className="user-details-container">
         {user ? (
           <div className="user-card">

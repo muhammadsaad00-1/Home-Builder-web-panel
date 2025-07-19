@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { db, collection, getDocs } from "../firebaseConfig";
-import Navbar from "./NavBar"; // Import Navbar
 import "./ProjectList.css"; // Import CSS for styling
 
 function ProjectList() {
@@ -22,14 +21,27 @@ function ProjectList() {
 
   return (
     <>
-      <Navbar /> {/* Include Navbar */}
       <div className="project-list-container">
         <h1>User Projects</h1>
         <div className="project-grid">
-          {projects.map((project) => (
-            <div key={project.id} className="project-card" onClick={() => navigate(`/user/${userId}/project/${project.id}`)}>
-              <h2>{project.projectName}</h2>
-              <p><strong>Created At:</strong> {new Date(project.createdAt.seconds * 1000).toLocaleDateString()}</p>
+          {projects.map((project, idx) => (
+            <div
+              className="project-card-modern"
+              key={project.id}
+              onClick={() => navigate(`/user/${userId}/project/${project.id}`)}
+              style={{ boxShadow: '0 2px 12px rgba(0,82,204,0.07)', transition: 'box-shadow 0.2s', cursor: 'pointer', background: 'linear-gradient(135deg, #f8fafc 60%, #e3e7ed 100%)' }}
+            >
+              <div className="project-card-header">
+                <span className="project-number">Project #{idx + 1}</span>
+                <span className="project-name">{project.projectName}</span>
+              </div>
+              <div className="project-card-details">
+                <span>Floor: {project.selectedFloor}</span>
+                <span>Created: {project.createdAt?.toDate().toLocaleString()}</span>
+                {project.sitebuilder && (
+                  <span style={{ color: '#00bcd4', fontWeight: 600 }}>Sitebuilder: {project.sitebuilder}</span>
+                )}
+              </div>
             </div>
           ))}
         </div>

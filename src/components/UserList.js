@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db, collection, getDocs } from "../firebaseConfig";
 import { useNavigate } from "react-router-dom";
-import Navbar from "./NavBar"; // Import Navbar
 import "./UserList.css"; // Import CSS for styling
 
 function UserList() {
@@ -21,13 +20,21 @@ function UserList() {
 
   return (
     <>
-      <Navbar /> {/* Include the Navbar */}
       <div className="user-list-container">
         <h1>Users</h1>
-        <div className="user-grid">
-          {users.map(user => (
-            <div key={user.id} className="user-card" onClick={() => navigate(`/user/${user.id}`)}>
-              <p className="user-name">{user.name}</p>
+        <div className="user-list-grid">
+          {users.map((user) => (
+            <div
+              className="user-card-modern beautiful-user-card"
+              key={user.id}
+              onClick={() => navigate(`/user/${user.id}/projects`)}
+              style={{ boxShadow: '0 2px 12px rgba(0,82,204,0.07)', transition: 'box-shadow 0.2s, transform 0.18s', cursor: 'pointer', background: 'linear-gradient(135deg, #f8fafc 60%, #e3e7ed 100%)' }}
+            >
+              <div className="user-card-header">{user.name}</div>
+              <div className="user-card-email">{user.email}</div>
+              {user.contact && (
+                <div className="user-card-contact">{user.contact}</div>
+              )}
             </div>
           ))}
         </div>

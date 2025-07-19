@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebaseConfig";
-import { collection, getDocs, doc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import Navbar from "./components/NavBar";
+import "./AdminPanel.css";
 
 const AdminPanel = () => {
   const [users, setUsers] = useState([]);
@@ -12,7 +14,6 @@ const AdminPanel = () => {
       try {
         const usersCollection = collection(db, "users");
         const usersSnapshot = await getDocs(usersCollection);
-        
         const usersData = usersSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setUsers(usersData);
       } catch (error) {
@@ -39,55 +40,71 @@ const AdminPanel = () => {
   };
 
   return (
-    <div>
-      <h1>Admin Panel</h1>
-      <div style={{ display: "flex" }}>
-        {/* User List */}
-        <div style={{ width: "30%", borderRight: "1px solid #ddd", padding: "10px" }}>
+    <>
+      <Navbar />
+      <div className="admin-panel-root">
+        <aside className="admin-sidebar">
           <h2>Users</h2>
-          {users.map((user) => (
-            <div
-              key={user.id}
-              style={{ cursor: "pointer", padding: "10px", borderBottom: "1px solid #ddd" }}
-              onClick={() => handleUserClick(user)}
-            >
-              <strong>{user.name}</strong> ({user.email})
-            </div>
-          ))}
-        </div>
-        
-        {/* User Details & Projects */}
-        <div style={{ width: "70%", padding: "10px" }}>
+          <ul className="user-list">
+            {users.map((user) => (
+              <li
+                key={user.id}
+                className={`user-list-item${selectedUser && selectedUser.id === user.id ? " selected" : ""}`}
+                onClick={() => handleUserClick(user)}
+              >
+                <span className="user-avatar">{user.name?.[0]?.toUpperCase() || "U"}</span>
+                <div className="user-info">
+                  <span className="user-name">{user.name}</span>
+                  <span className="user-email">{user.email}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </aside>
+        <main className="admin-main">
           {selectedUser ? (
-            <div>
-              <h2>User Details</h2>
-              <p><strong>Name:</strong> {selectedUser.name}</p>
-              <p><strong>Email:</strong> {selectedUser.email}</p>
-              <p><strong>Contact:</strong> {selectedUser.contact}</p>
-              <h3>Projects</h3>
-              {selectedProjects.length > 0 ? (
-                selectedProjects.map((project) => (
-                  <div key={project.id} style={{ padding: "10px", border: "1px solid #ddd", marginBottom: "10px" }}>
-                    <h4>{project.projectName}</h4>
-                    <p><strong>Floor:</strong> {project.selectedFloor}</p>
-                    <p><strong>Created At:</strong> {project.createdAt?.toDate().toLocaleString()}</p>
-                    <img src={project.selectedBathroom} alt="Bathroom" width="100" />
-                    <img src={project.selectedKitchen} alt="Kitchen" width="100" />
-                    <img src={project.selectedLighting} alt="Lighting" width="100" />
-                    <img src={project.selectedWindow} alt="Window" width="100" />
-                    <img src={project.selectedSecondFacadeImage} alt="Facade" width="100" />
+            <div className="user-details-section">
+              <div className="user-details-header">
+                <h2>{selectedUser.name}</h2>
+                <span className="user-contact">{selectedUser.contact}</span>
+                <span className="project-count">Projects: {selectedProjects.length}</span>
+              </div>
+              <div className="project-list-section">
+                <h3>Projects</h3>
+                {selectedProjects.length > 0 ? (
+                  <div className="project-list-yo">
+                    {selectedProjects.map((project) => (
+                      <div key={project.id} className="project-card-yo">
+                        <div className="project-card-header">
+                          <span className="project-name">{project.projectName}</span>
+                          <span className="project-floor">Floor: {project.selectedFloor}</span>
+                        </div>
+                        <div className="project-card-date">
+                          Created: {project.createdAt?.toDate().toLocaleString()}
+                        </div>
+                        <div className="project-images">
+                          {project.selectedBathroom && <img src={project.selectedBathroom} alt="Bathroom" />}
+                          {project.selectedKitchen && <img src={project.selectedKitchen} alt="Kitchen" />}
+                          {project.selectedLighting && <img src={project.selectedLighting} alt="Lighting" />}
+                          {project.selectedWindow && <img src={project.selectedWindow} alt="Window" />}
+                          {project.selectedSecondFacadeImage && <img src={project.selectedSecondFacadeImage} alt="Facade" />}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))
-              ) : (
-                <p>No projects found.</p>
-              )}
+                ) : (
+                  <p className="no-projects">No projects found.</p>
+                )}
+              </div>
             </div>
           ) : (
-            <p>Select a user to view details.</p>
+            <div className="select-user-placeholder">
+              <h2>Select a user to view details and projects</h2>
+            </div>
           )}
-        </div>
+        </main>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db, doc, getDoc, collection, getDocs, updateDoc } from "../firebaseConfig";
-import Navbar from "./NavBar"; // Import Navbar
 
 function ProjectDetails() {
   const { userId, projectId } = useParams();
@@ -60,7 +59,6 @@ function ProjectDetails() {
 
   return (
     <>
-      <Navbar /> {/* Include the Navbar */}
       <div className="container">
         <div className="project-header">
           <h1>{project?.projectName}</h1>
